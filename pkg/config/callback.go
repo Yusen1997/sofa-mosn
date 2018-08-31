@@ -149,15 +149,15 @@ func (config *MOSNConfig) OnUpdateEndpoints(loadAssignments []*pb.ClusterLoadAss
 
 		for _, endpoints := range loadAssignment.Endpoints {
 			hosts := convertEndpointsConfig(&endpoints)
-
-			for _, host := range hosts {
-				log.DefaultLogger.Debugf("xds client update endpoint: cluster: %s, priority: %d, %+v\n", loadAssignment.ClusterName, endpoints.Priority, host)
+			log.DefaultLogger.Debugf("xds client update endpoint: cluster: %s, priority: %d, hosts list are:", loadAssignment.ClusterName, endpoints.Priority)
+			for index, host := range hosts {
+				log.DefaultLogger.Debugf("host[%d] is : %+v", index, host)
 			}
 
 			if err := clusterAdapter.GetClusterMngAdapterInstance().TriggerClusterHostUpdate(clusterName, hosts); err != nil {
-				log.DefaultLogger.Errorf("xds client update Error = %s", err.Error())
+				log.DefaultLogger.Errorf("xds client update Error = %s, hosts are:", err.Error(), hosts)
 			} else {
-				log.DefaultLogger.Debugf("xds client update host success")
+				log.DefaultLogger.Debugf("xds client update host success,hosts are:", hosts)
 			}
 		}
 	}
